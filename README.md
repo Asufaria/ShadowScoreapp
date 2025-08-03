@@ -18,9 +18,10 @@ Shadowverse Worlds BEYOND特殊大会用のスコア計測Webアプリケーシ�
 ## 🚀 クイックスタート
 
 ### 📥 配布版（推奨）
-1. [リリースページ](../../releases)から最新の`ShadowScore.exe`をダウンロード
-2. ダブルクリックで実行
-3. ブラウザで http://localhost:8000 にアクセス
+1. [リリースページ](../../releases)から最新の`ShadowScore-vX.X.X.zip`をダウンロード
+2. ZIPファイルを解凍
+3. 解凍したフォルダ内の`ShadowScore.exe`をダブルクリックで実行
+4. ブラウザで http://localhost:8000 にアクセス
 
 ### 🛠️ 開発版
 
@@ -134,6 +135,14 @@ shadowscore/
 3. 変更をコミット (`git commit -m 'Add amazing feature'`)
 4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
 5. プルリクエストを作成
+
+## 📄 ライセンス
+
+## 📚 ドキュメント
+
+- 📖 **[ユーザーガイド](docs/USER_GUIDE.md)** - 詳細な使用方法
+- 🚀 **[クイックスタート](docs/QUICKSTART.html)** - 簡単セットアップガイド
+- 📄 **[配布版README](README_配布版.md)** - エンドユーザー向け説明
 
 ## 📄 ライセンス
 

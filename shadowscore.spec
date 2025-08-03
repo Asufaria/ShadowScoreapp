@@ -10,7 +10,7 @@ a = Analysis(
     binaries=[],
     datas=[
         ('static', 'static'),  # 静的ファイルを含める
-        ('*.html', '.'),       # HTMLファイルを含める
+        ('docs', 'docs'),      # ドキュメントファイルを含める
     ],
     hiddenimports=[
         'uvicorn.logging',
