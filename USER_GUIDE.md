@@ -116,7 +116,7 @@ Shadowverse Worlds BEYOND特殊大会用スコア計測アプリの使い方を�
 
 ### 📧 問い合わせ
 - GitHub: [Issues](https://github.com/Asufaria/ShadowScoreapp/issues)
-- メール: [設定されたサポートアドレス]
+- リリース: [最新版ダウンロード](https://github.com/Asufaria/ShadowScoreapp/releases)
 
 ### 📋 報告時に必要な情報
 - 使用しているOS（Windows 10/11など）
