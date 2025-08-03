@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowScore - Shadowverse Worlds BEYOND スコア計測</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 ShadowScore</h1>
+            <p>Shadowverse Worlds BEYOND 特殊大会用スコア計測</p>
+        </header>
+
+        <main>
+            <!-- 新規対戦開始セクション -->
+            <section class="match-start" id="matchStart">
+                <h2>新規対戦開始</h2>
+                <div class="players-setup">
+                    <div class="form-group">
+                        <label for="playerA">プレイヤーA:</label>
+                        <input type="text" id="playerA" placeholder="プレイヤーA名を入力">
+                    </div>
+                    <div class="form-group">
+                        <label for="playerB">プレイヤーB:</label>
+                        <input type="text" id="playerB" placeholder="プレイヤーB名を入力">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstPlayer">先行:</label>
+                        <select id="firstPlayer">
+                            <option value="">選択してください</option>
+                        </select>
+                    </div>
+                    <button onclick="startNewMatch()">対戦開始</button>
+                </div>
+            </section>
+
+            <!-- 対戦中セクション -->
+            <section class="match-active" id="matchActive" style="display: none;">
+                <div class="match-info">
+                    <h2>対戦中: <span id="playerAName"></span> vs <span id="playerBName"></span></h2>
+                    <div class="score-display">
+                        <div class="turn-info">
+                            <div class="current-turn">ターン <span id="currentTurn">1</span></div>
+                            <div class="current-player">現在: <span id="currentPlayer"></span></div>
+                        </div>
+                        <div class="scores">
+                            <div class="player-score">
+                                <span id="playerANameScore"></span>: <span id="playerAScore">0</span>
+                            </div>
+                            <div class="player-score">
+                                <span id="playerBNameScore"></span>: <span id="playerBScore">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ボタン入力エリア -->
+                <div class="button-input">
+                    <h3>ポイント入力（ボタンクリック）</h3>
+                    
+                    <!-- 通常カード（フォロワー/スペル/アミュレット） -->
+                    <div class="normal-cards">
+                        <h4>フォロワー・スペル・アミュレット</h4>
+                        <div class="button-grid">
+                            <button class="card-btn bronze" onclick="addNormalCard('bronze')">
+                                ブロンズ<br><small>200エーテル</small>
+                            </button>
+                            <button class="card-btn silver" onclick="addNormalCard('silver')">
+                                シルバー<br><small>400エーテル</small>
+                            </button>
+                            <button class="card-btn gold" onclick="addNormalCard('gold')">
+                                ゴールド<br><small>800エーテル</small>
+                            </button>
+                            <button class="card-btn legend" onclick="addNormalCard('legend')">
+                                レジェンド<br><small>3500エーテル</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- アクトカード -->
+                    <div class="act-cards">
+                        <h4>アクト（1/3計算）</h4>
+                        <div class="button-grid">
+                            <button class="act-btn bronze" onclick="addActCard('bronze')">
+                                ブロンズ<br><small>200 → 66エーテル</small>
+                            </button>
+                            <button class="act-btn silver" onclick="addActCard('silver')">
+                                シルバー<br><small>400 → 133エーテル</small>
+                            </button>
+                            <button class="act-btn gold" onclick="addActCard('gold')">
+                                ゴールド<br><small>800 → 266エーテル</small>
+                            </button>
+                            <button class="act-btn legend" onclick="addActCard('legend')">
+                                レジェンド<br><small>3500 → 1166エーテル</small>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 現在のターン履歴 -->
+                    <div class="turn-history">
+                        <h4>現在ターンの入力</h4>
+                        <div id="currentTurnInputs"></div>
+                        <div class="turn-score-breakdown">
+                            <div>通常スコア: <span id="normalScore">0</span></div>
+                            <div>アクトスコア: <span id="actScore">0</span></div>
+                            <div class="total-turn-score">合計: <span id="turnScore">0</span></div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn-primary" onclick="nextTurn()">次のターン</button>
+                        <button class="btn-secondary" onclick="undoTurn()">1ターン戻る</button>
+                        <button class="btn-info" onclick="showMatchHistory()">履歴確認</button>
+                        <button class="btn-warning" onclick="clearCurrentTurn()">ターンクリア</button>
+                    </div>
+                </div>
+
+                <!-- 対戦終了 -->
+                <div class="match-finish">
+                    <h3>対戦終了</h3>
+                    <div class="finish-actions">
+                        <button class="btn-win" onclick="finishMatch('playerA')">
+                            <span id="playerANameFinish"></span> 勝利
+                        </button>
+                        <button class="btn-win" onclick="finishMatch('playerB')">
+                            <span id="playerBNameFinish"></span> 勝利
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 履歴モーダル -->
+            <div class="modal" id="historyModal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeHistoryModal()">&times;</span>
+                    <h3>対戦履歴</h3>
+                    <div id="matchHistoryContent"></div>
+                </div>
+            </div>
+
+            <!-- ターン編集モーダル -->
+            <div class="modal" id="editTurnModal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeEditTurnModal()">&times;</span>
+                    <h3>ターン編集</h3>
+                    <div id="editTurnContent">
+                        <div class="edit-turn-form">
+                            <h4>通常カード</h4>
+                            <div id="editNormalCards"></div>
+                            <h4>アクトカード</h4>
+                            <div id="editActCards"></div>
+                            <div class="edit-actions">
+                                <button class="btn-primary" onclick="saveEditedTurn()">保存</button>
+                                <button class="btn-secondary" onclick="closeEditTurnModal()">キャンセル</button>
+                                <button class="btn-danger" onclick="deleteTurn()">このターンを削除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 対戦履歴セクション -->
+            <section class="match-history">
+                <h2>対戦履歴</h2>
+                <button onclick="loadHistory()">履歴を更新</button>
+                <div id="historyList"></div>
+            </section>
+
+            <!-- 対戦編集モーダル -->
+            <div class="modal" id="editMatchModal" style="display: none;">
+                <div class="modal-content large">
+                    <span class="close" onclick="closeEditMatchModal()">&times;</span>
+                    <h3>対戦編集</h3>
+                    <div id="editMatchContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

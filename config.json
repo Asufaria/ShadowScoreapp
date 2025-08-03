@@ -1,0 +1,27 @@
+{
+  "app": {
+    "name": "ShadowScore",
+    "version": "1.1.0",
+    "description": "Shadowverse Worlds BEYOND 特殊大会用スコア計測アプリ"
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8000,
+    "log_level": "info"
+  },
+  "logging": {
+    "file_max_size_mb": 10,
+    "backup_count": 5,
+    "log_level": "INFO"
+  },
+  "paths": {
+    "data_file": "matches.json",
+    "logs_dir": "logs",
+    "static_dir": "static"
+  },
+  "features": {
+    "auto_save": true,
+    "portable_mode": true,
+    "debug_mode": false
+  }
+}
