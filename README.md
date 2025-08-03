@@ -155,13 +155,6 @@ shadowscore/
 - 再現手順
 - エラーメッセージ
 - ログファイル（該当部分）
-
-## 📞 サポート
-
-- 📧 Email: [your-email@example.com]
-- 🐦 Twitter: [@youraccount]
-- 💬 Discord: [Server Link]
-
 ---
 
 © 2024 ShadowScore Team
