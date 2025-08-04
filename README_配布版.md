@@ -5,7 +5,7 @@ Shadowverse Worlds BEYOND特殊大会用のスコア計測Webアプリケーシ�
 ## 🚀 かんたん実行方法（配布版）
 
 ### 1. ダウンロード
-GitHub Releasesから最新の `ShadowScore-v1.3.0.zip` をダウンロードしてください。
+GitHub Releasesから最新の `ShadowScore-v1.4.0.zip` をダウンロードしてください。
 
 ### 2. 解凍
 ダウンロードしたZIPファイルを適当な場所に解凍してください。

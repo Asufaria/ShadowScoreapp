@@ -1,68 +1,77 @@
 @echo off
-chcp 65001 >nul
-echo ShadowScore アプリケーション ビルドスクリプト
-echo ===============================================
+chcp 65001 >nul 2>&1
+echo ShadowScore Application Build Script
+echo ===================================
 
-REM 仮想環境をアクティベート
+REM Activate virtual environment
 if exist ".venv\Scripts\activate.bat" (
     call .venv\Scripts\activate.bat
-    echo 仮想環境をアクティベートしました
+    echo Virtual environment activated
 ) else (
-    echo 仮想環境が見つかりません。python -m venv .venv を実行してください。
+    echo Virtual environment not found. Please run: python -m venv .venv
     pause
     exit /b 1
 )
 
-REM 必要なパッケージをインストール
+REM Install required packages
 echo.
-echo 必要なパッケージをインストール中...
+echo Installing required packages...
 pip install -r requirements.txt
 
-REM ビルド実行
+REM Build application
 echo.
-echo アプリケーションをビルド中...
+echo Building application...
 pyinstaller shadowscore.spec
 
-# ビルド結果を確認
+REM Check build result
 if exist "dist\ShadowScore.exe" (
     echo.
     echo ========================================
-    echo ビルド完了！
-    echo 実行ファイル: dist\ShadowScore.exe
+    echo Build completed!
+    echo Executable: dist\ShadowScore.exe
     echo ========================================
     
-    REM 配布用ZIPファイルを作成
+    REM Create distribution package
     echo.
-    echo 配布用ZIPファイルを作成中...
+    echo Creating distribution package...
     
-    REM 古いZIPファイルがあれば削除
-    if exist "ShadowScore-v*.zip" del "ShadowScore-v*.zip"
+    REM Clean up old files
+    if exist "ShadowScore-v1.4.0.zip" del /Q "ShadowScore-v1.4.0.zip"
+    if exist "ShadowScore-v1.4.0\" rmdir /S /Q "ShadowScore-v1.4.0\"
     
-    REM 現在の日付でバージョンを作成
-    for /f "tokens=2 delims==" %%a in ('wmic OS Get localdatetime /value') do set "dt=%%a"
-    set "YY=%dt:~2,2%" & set "MM=%dt:~4,2%" & set "DD=%dt:~6,2%"
-    set "version=v1.%YY%.%MM%%DD%"
+    REM Create distribution directory
+    mkdir "ShadowScore-v1.4.0"
     
-    REM ZIPファイル作成（PowerShellを使用）
-    powershell -command "Compress-Archive -Path 'dist\*' -DestinationPath 'ShadowScore-%version%.zip' -Force"
+    REM Copy files
+    copy "dist\ShadowScore.exe" "ShadowScore-v1.4.0\"
+    if exist "README_配布版.md" copy "README_配布版.md" "ShadowScore-v1.4.0\"
+    if exist "docs\QUICKSTART.html" copy "docs\QUICKSTART.html" "ShadowScore-v1.4.0\"
+    if exist "docs\USER_GUIDE.md" copy "docs\USER_GUIDE.md" "ShadowScore-v1.4.0\"
     
-    if exist "ShadowScore-%version%.zip" (
-        echo ✅ 配布用ZIPファイルを作成しました: ShadowScore-%version%.zip
+    REM Create directories
+    mkdir "ShadowScore-v1.4.0\data"
+    mkdir "ShadowScore-v1.4.0\logs"
+    
+    REM Create ZIP file
+    echo Creating ZIP file...
+    powershell -ExecutionPolicy Bypass -Command "Compress-Archive -Path 'ShadowScore-v1.4.0\*' -DestinationPath 'ShadowScore-v1.4.0.zip' -Force"
+    
+    if exist "ShadowScore-v1.4.0.zip" (
         echo.
-        echo 📋 配布手順:
-        echo 1. ShadowScore-%version%.zip をGitHub Releasesにアップロード
-        echo 2. または直接配布してください
+        echo ========================================
+        echo Distribution package created:
+        echo    - Folder: ShadowScore-v1.4.0\
+        echo    - ZIP file: ShadowScore-v1.4.0.zip
+        echo ========================================
     ) else (
-        echo ❌ ZIPファイルの作成に失敗しました
+        echo.
+        echo ZIP file creation failed
     )
     
-    echo.
-    echo distフォルダを配布用にコピーしてください。
-    echo アプリケーションを起動するには ShadowScore.exe を実行してください。
 ) else (
     echo.
-    echo ビルドに失敗しました。
-    echo エラーログを確認してください。
+    echo Build failed.
+    echo Check error logs.
 )
 
 echo.

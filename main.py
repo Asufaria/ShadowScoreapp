@@ -23,27 +23,65 @@ logger = get_logger()
 app = FastAPI(
     title="ShadowScore API",
     description="Shadowverse Worlds BEYOND 特殊大会用スコア計測API",
-    version="1.3.0"
+    version="1.4.0"
 )
 
 # 静的ファイル配信設定
-if os.path.exists("static"):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+static_dir = os.path.join(current_dir, "static")
+
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    logger.info(f"静的ファイルディレクトリをマウント: {static_dir}")
+else:
+    logger.warning(f"静的ファイルディレクトリが見つかりません: {static_dir}")
+
+# 静的ファイルの直接アクセス用（互換性のため）
+@app.get("/style.css")
+async def get_style_css():
+    """CSSファイルの直接アクセス"""
+    css_path = os.path.join(static_dir, "style.css")
+    return FileResponse(css_path, media_type="text/css")
+
+@app.get("/script.js")
+async def get_script_js():
+    """JavaScriptファイルの直接アクセス"""
+    js_path = os.path.join(static_dir, "script.js")
+    return FileResponse(js_path, media_type="application/javascript")
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     """メインページ"""
     try:
-        with open("static/index.html", "r", encoding="utf-8") as f:
+        import os
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        html_path = os.path.join(current_dir, "static", "index.html")
+        
+        with open(html_path, "r", encoding="utf-8") as f:
             content = f.read()
         return HTMLResponse(content=content)
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+        logger.error(f"HTMLファイルが見つかりません: {e}")
         return HTMLResponse("""
         <html>
             <head><title>ShadowScore</title></head>
             <body>
                 <h1>ShadowScore API</h1>
                 <p>Shadowverse Worlds BEYOND 特殊大会用スコア計測API</p>
+                <p><a href="/docs">API Documentation</a></p>
+                <p>エラー: HTMLファイルが見つかりません</p>
+            </body>
+        </html>
+        """)
+    except Exception as e:
+        logger.error(f"HTMLファイル読み込みエラー: {e}")
+        return HTMLResponse(f"""
+        <html>
+            <head><title>ShadowScore Error</title></head>
+            <body>
+                <h1>ShadowScore API - エラー</h1>
+                <p>エラーが発生しました: {str(e)}</p>
                 <p><a href="/docs">API Documentation</a></p>
             </body>
         </html>

@@ -65,3 +65,9 @@ desktop.ini
 
 # 設定ファイル（機密情報含む可能性）
 config.local.json
+
+# リリース成果物
+ShadowScore-*.zip
+ShadowScore-v*/
+*.exe
+release/
