@@ -23,7 +23,7 @@ logger = get_logger()
 app = FastAPI(
     title="ShadowScore API",
     description="Shadowverse Worlds BEYOND 特殊大会用スコア計測API",
-    version="1.0.0"
+    version="1.3.0"
 )
 
 # 静的ファイル配信設定
@@ -33,18 +33,21 @@ if os.path.exists("static"):
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     """メインページ"""
-    if os.path.exists("static/index.html"):
-        return FileResponse("static/index.html")
-    return HTMLResponse("""
-    <html>
-        <head><title>ShadowScore</title></head>
-        <body>
-            <h1>ShadowScore API</h1>
-            <p>Shadowverse Worlds BEYOND 特殊大会用スコア計測API</p>
-            <p><a href="/docs">API Documentation</a></p>
-        </body>
-    </html>
-    """)
+    try:
+        with open("static/index.html", "r", encoding="utf-8") as f:
+            content = f.read()
+        return HTMLResponse(content=content)
+    except FileNotFoundError:
+        return HTMLResponse("""
+        <html>
+            <head><title>ShadowScore</title></head>
+            <body>
+                <h1>ShadowScore API</h1>
+                <p>Shadowverse Worlds BEYOND 特殊大会用スコア計測API</p>
+                <p><a href="/docs">API Documentation</a></p>
+            </body>
+        </html>
+        """)
 
 @app.post("/api/match/new", response_model=Match)
 async def create_new_match(match_data: MatchCreate):
